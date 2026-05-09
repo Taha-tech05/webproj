@@ -1,9 +1,12 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useAuth } from '../AuthContext.jsx';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
 import { mockDonors, mockProjects, mockDonations, monthlyData } from '../data.js';
 
 const fmt = (n) => `Rs${n.toLocaleString('en-PK')}`;
 
-function StatCard({ label, value, sub, subColor, icon, progress, progressPct }) {
+function StatCard({ label, value, sub, subColor, icon }) {
     return (
         <div className="animate-fade" style={{
             background: '#fff', borderRadius: 'var(--radius)', padding: '24px',
@@ -13,18 +16,8 @@ function StatCard({ label, value, sub, subColor, icon, progress, progressPct }) 
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: '500' }}>{label}</span>
                 <span style={{ fontSize: '22px' }}>{icon}</span>
             </div>
-            <div style={{ fontSize: '26px', fontWeight: '800', color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: '8px' }}>
-                {value}
-            </div>
+            <div style={{ fontSize: '26px', fontWeight: '800', color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: '8px' }}>{value}</div>
             {sub && <div style={{ fontSize: '13px', color: subColor || 'var(--accent)', fontWeight: '500' }}>{sub}</div>}
-            {progress && (
-                <>
-                    <div style={{ marginTop: '12px', height: '6px', background: '#e0e7ff', borderRadius: '99px', overflow: 'hidden' }}>
-                        <div style={{ height: '100%', width: `${progressPct}%`, background: 'var(--primary)', borderRadius: '99px', transition: 'width 0.8s ease' }} />
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>{progressPct}% funded</div>
-                </>
-            )}
         </div>
     );
 }
@@ -45,6 +38,18 @@ const DonutChart = ({ pct }) => {
 };
 
 export default function Dashboard({ onNavigate }) {
+    const { user } = useAuth();
+    const router = useRouter();
+
+    // Admin-only guard
+    useEffect(() => {
+        if (user && user.role !== 'Admin') {
+            router.replace('/operator-dashboard');
+        }
+    }, [user]);
+
+    if (!user || user.role !== 'Admin') return null;
+
     const totalPledged = mockDonors.reduce((s, d) => s + d.pledged, 0);
     const totalReceived = mockDonors.reduce((s, d) => s + d.received, 0);
     const totalExpenses = mockProjects.reduce((s, p) => s + p.expenses, 0);
@@ -78,7 +83,6 @@ export default function Dashboard({ onNavigate }) {
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
-
                 <div style={{ background: '#fff', borderRadius: 'var(--radius)', padding: '24px', border: '1px solid var(--border)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: 'var(--text)' }}>Project Funding</h3>
                     <ResponsiveContainer width="100%" height={250}>
@@ -103,7 +107,6 @@ export default function Dashboard({ onNavigate }) {
                         </div>
                     ))}
                 </div>
-
                 <div style={{ background: '#fff', borderRadius: 'var(--radius)', padding: '24px', border: '1px solid var(--border)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: 'var(--text)' }}>Budget Status</h3>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useAuth } from '../AuthContext.jsx';
 
 const adminNav = [
@@ -20,8 +21,14 @@ const operatorNav = [
 
 export default function Layout({ children, currentPage, onNavigate }) {
     const { user, logout } = useAuth();
+    const router = useRouter();
     const isAdmin = user?.role === 'Admin';
     const navItems = isAdmin ? adminNav : operatorNav;
+
+    const handleLogout = async () => {
+        await logout();
+        router.replace('/login');
+    };
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
@@ -96,7 +103,7 @@ export default function Layout({ children, currentPage, onNavigate }) {
                             background: 'linear-gradient(135deg, var(--primary), #7c3aed)', color: '#fff',
                             display: 'grid', placeItems: 'center', fontWeight: 700, fontSize: '14px',
                         }}>
-                            {user?.name?.charAt(0) || 'U'}
+                            {user?.name?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div>
                             <div style={{ fontSize: '14px', fontWeight: '700', color: '#f1f5f9' }}>{user?.name || 'User'}</div>
@@ -104,7 +111,7 @@ export default function Layout({ children, currentPage, onNavigate }) {
                         </div>
                     </div>
                     <button
-                        onClick={() => { logout(); }}
+                        onClick={handleLogout}
                         style={{
                             width: '100%', padding: '10px 14px', borderRadius: '10px',
                             border: '1px solid rgba(255,255,255,0.08)',

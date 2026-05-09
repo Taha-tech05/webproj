@@ -14,7 +14,6 @@ const pageMap = {
   '/expenses': 'expenses',
   '/reports': 'reports',
   '/users': 'users',
-  '/': 'dashboard',
 };
 
 const routeMap = {
@@ -28,23 +27,64 @@ const routeMap = {
   users: '/users',
 };
 
+// Pages that require Admin role
+const adminOnlyPages = ['/dashboard', '/users', '/reports'];
+// Pages that require Operator role (not Admin)
+const operatorOnlyPages = ['/operator-dashboard'];
+
 function AppContent({ Component, pageProps }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const isLogin = router.pathname === '/login';
+  const isSignup = router.pathname === '/signup';
+  const isPublic = isLogin || isSignup;
 
   useEffect(() => {
-    if (!user && !isLogin) {
-      router.replace('/login');
-    }
-    if (user && isLogin) {
-      router.replace(user.role === 'Admin' ? '/dashboard' : '/operator-dashboard');
-    }
-  }, [user, isLogin, router]);
+    if (loading) return; // Wait until auth state is known — prevents flash/redirect loop
 
-  if (isLogin) {
+    if (!user && !isPublic) {
+      router.replace('/login');
+      return;
+    }
+
+    if (user && isPublic) {
+      router.replace(user.role === 'Admin' ? '/dashboard' : '/operator-dashboard');
+      return;
+    }
+
+    if (user) {
+      const path = router.pathname;
+      // Operator trying to access Admin-only pages
+      if (user.role !== 'Admin' && adminOnlyPages.includes(path)) {
+        router.replace('/operator-dashboard');
+        return;
+      }
+      // Admin trying to access operator-only pages
+      if (user.role === 'Admin' && operatorOnlyPages.includes(path)) {
+        router.replace('/dashboard');
+        return;
+      }
+    }
+  }, [user, loading, router.pathname]);
+
+  // While resolving auth state, show a minimal loading screen (prevents flash)
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh', background: 'var(--bg)',
+        fontSize: '15px', color: 'var(--text-muted)',
+      }}>
+        Loading…
+      </div>
+    );
+  }
+
+  if (isPublic) {
     return <Component {...pageProps} />;
   }
+
+  if (!user) return null; // Will redirect via useEffect above
 
   const currentPage = pageMap[router.pathname] || 'dashboard';
   const onNavigate = (id) => router.push(routeMap[id] || '/dashboard');
