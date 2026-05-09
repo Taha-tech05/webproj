@@ -29,25 +29,25 @@ export function Field({ label, required, error, children }) {
 }
 
 export function Input({ type, value, onChange, placeholder, min, error }) {
-  return <input type={type || 'text'} value={value} onChange={onChange} placeholder={placeholder} min={min} style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, borderRadius: 9, fontSize: 14, fontFamily: 'var(--font)', background: '#fafbfe', boxSizing: 'border-box', outline: 'none' }} />;
+  return <input type={type || 'text'} value={value} onChange={onChange} placeholder={placeholder} min={min} style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, borderRadius: 9, fontSize: 14, fontFamily: 'var(--font)', background: '#f8fafc', boxSizing: 'border-box', outline: 'none' }} />;
 }
 
 export function Select({ value, onChange, error, children }) {
-  return <select value={value} onChange={onChange} style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, borderRadius: 9, fontSize: 14, fontFamily: 'var(--font)', background: '#fafbfe', boxSizing: 'border-box', outline: 'none', cursor: 'pointer' }}>{children}</select>;
+  return <select value={value} onChange={onChange} style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, borderRadius: 9, fontSize: 14, fontFamily: 'var(--font)', background: '#f8fafc', boxSizing: 'border-box', outline: 'none', cursor: 'pointer' }}>{children}</select>;
 }
 
 export function Textarea({ value, onChange, placeholder, error }) {
-  return <textarea value={value} onChange={onChange} placeholder={placeholder} rows={4} style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, borderRadius: 9, fontSize: 14, fontFamily: 'var(--font)', background: '#fafbfe', boxSizing: 'border-box', outline: 'none', resize: 'vertical' }} />;
+  return <textarea value={value} onChange={onChange} placeholder={placeholder} rows={4} style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, borderRadius: 9, fontSize: 14, fontFamily: 'var(--font)', background: '#f8fafc', boxSizing: 'border-box', outline: 'none', resize: 'vertical' }} />;
 }
 
 export function Btn({ variant, size, onClick, children, style }) {
-  const v = { primary: { background: 'var(--primary)', color: '#fff', border: 'none' }, secondary: { background: '#e8eeff', color: 'var(--primary)', border: 'none' }, ghost: { background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)' }, danger: { background: '#fff0f1', color: 'var(--danger)', border: 'none' } }[variant || 'ghost'];
+  const v = { primary: { background: 'var(--primary)', color: '#fff', border: 'none' }, secondary: { background: '#e0e7ff', color: 'var(--primary)', border: 'none' }, ghost: { background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)' }, danger: { background: '#fef2f2', color: 'var(--danger)', border: 'none' } }[variant || 'ghost'];
   const s = size === 'sm' ? { padding: '7px 12px', fontSize: 12.5 } : { padding: '10px 16px', fontSize: 14 };
   return <button onClick={onClick} style={{ ...v, ...s, borderRadius: 9, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, ...style }}>{children}</button>;
 }
 
 export function Badge({ status }) {
-  const m = { active: { bg: '#e8faf4', color: '#00875a' }, inactive: { bg: '#f5f5f5', color: '#888' }, paid: { bg: '#e8faf4', color: '#00875a' }, pending: { bg: '#fff8e6', color: '#b07d00' } };
+  const m = { active: { bg: '#ecfdf5', color: '#059669' }, inactive: { bg: '#f1f5f9', color: '#64748b' }, paid: { bg: '#ecfdf5', color: '#059669' }, pending: { bg: '#fffbeb', color: '#d97706' } };
   const s = m[status] || m.inactive;
   return <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: s.bg, color: s.color, textTransform: 'capitalize' }}>{status}</span>;
 }
@@ -56,7 +56,7 @@ export function Table({ headers, empty, children }) {
   return (
     <div style={{ overflowX: 'auto' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-        <thead><tr style={{ borderBottom: '2px solid var(--border)', background: '#fafbfe' }}>{headers.map((h, i) => { const l = typeof h === 'string' ? h : h.label; const a = typeof h === 'string' ? 'left' : (h.align || 'left'); return <th key={i} style={{ padding: '12px 14px', textAlign: a, fontSize: 11.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>{l}</th>; })}</tr></thead>
+        <thead><tr style={{ borderBottom: '2px solid var(--border)', background: '#f8fafc' }}>{headers.map((h, i) => { const l = typeof h === 'string' ? h : h.label; const a = typeof h === 'string' ? 'left' : (h.align || 'left'); return <th key={i} style={{ padding: '12px 14px', textAlign: a, fontSize: 11.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>{l}</th>; })}</tr></thead>
         <tbody>{empty ? <tr><td colSpan={headers.length} style={{ padding: 32, textAlign: 'center', color: 'var(--text-muted)' }}>No records found</td></tr> : children}</tbody>
       </table>
     </div>

@@ -19,7 +19,7 @@ function StatCard({ label, value, sub, subColor, icon, progress, progressPct }) 
             {sub && <div style={{ fontSize: '13px', color: subColor || 'var(--accent)', fontWeight: '500' }}>{sub}</div>}
             {progress && (
                 <>
-                    <div style={{ marginTop: '12px', height: '6px', background: '#e8eeff', borderRadius: '99px', overflow: 'hidden' }}>
+                    <div style={{ marginTop: '12px', height: '6px', background: '#e0e7ff', borderRadius: '99px', overflow: 'hidden' }}>
                         <div style={{ height: '100%', width: `${progressPct}%`, background: 'var(--primary)', borderRadius: '99px', transition: 'width 0.8s ease' }} />
                     </div>
                     <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>{progressPct}% funded</div>
@@ -35,7 +35,7 @@ const DonutChart = ({ pct }) => {
     const dash = (circ * pct) / 100;
     return (
         <svg width="110" height="110" viewBox="0 0 110 110">
-            <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ffe0e2" strokeWidth={stroke} />
+            <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e0e7ff" strokeWidth={stroke} />
             <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--accent)" strokeWidth={stroke}
                 strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
                 transform={`rotate(-90 ${cx} ${cy})`} />

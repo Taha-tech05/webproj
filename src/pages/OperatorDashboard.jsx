@@ -17,7 +17,7 @@ export default function OperatorDashboard({ onNavigate }) {
     <div>
       {/* Welcome Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, #0f2570, #1a3faa)',
+        background: 'linear-gradient(135deg, #1e1b4b, #312e81)',
         borderRadius: 'var(--radius)', padding: '28px 32px', marginBottom: '28px',
         color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
