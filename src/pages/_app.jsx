@@ -7,7 +7,6 @@ import '../index.css';
 
 const pageMap = {
   '/dashboard': 'dashboard',
-  '/operator-dashboard': 'operator-dashboard',
   '/donors': 'donors',
   '/donations': 'donations',
   '/projects': 'projects',
@@ -18,7 +17,6 @@ const pageMap = {
 
 const routeMap = {
   dashboard: '/dashboard',
-  'operator-dashboard': '/operator-dashboard',
   donors: '/donors',
   donations: '/donations',
   projects: '/projects',
@@ -27,10 +25,8 @@ const routeMap = {
   users: '/users',
 };
 
-// Pages that require Admin role
-const adminOnlyPages = ['/dashboard', '/users', '/reports'];
-// Pages that require Operator role (not Admin)
-const operatorOnlyPages = ['/operator-dashboard'];
+// Pages that require strictly Admin role
+const adminOnlyPages = ['/reports'];
 
 function AppContent({ Component, pageProps }) {
   const { user, loading } = useAuth();
@@ -48,19 +44,13 @@ function AppContent({ Component, pageProps }) {
     }
 
     if (user && isPublic) {
-      router.replace(user.role === 'Admin' ? '/dashboard' : '/operator-dashboard');
+      router.replace('/dashboard');
       return;
     }
 
     if (user) {
       const path = router.pathname;
-      // Operator trying to access Admin-only pages
       if (user.role !== 'Admin' && adminOnlyPages.includes(path)) {
-        router.replace('/operator-dashboard');
-        return;
-      }
-      // Admin trying to access operator-only pages
-      if (user.role === 'Admin' && operatorOnlyPages.includes(path)) {
         router.replace('/dashboard');
         return;
       }

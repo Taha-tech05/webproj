@@ -9,7 +9,7 @@ const router = express.Router();
 // Helper — generate JWT
 const signToken = (user) =>
     jwt.sign(
-        { id: user.id, email: user.email, role: user.role, name: user.name },
+        { id: user.user_id, email: user.email, role: user.role, name: user.name },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
@@ -24,7 +24,7 @@ router.post(
             .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
         body('role')
             .optional()
-            .isIn(['Admin', 'Operator']).withMessage('Role must be Admin or Operator'),
+            .isIn(['Admin', 'Operator', 'Viewer']).withMessage('Role must be Admin, Operator, or Viewer'),
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -36,22 +36,20 @@ router.post(
 
         try {
             // Check if email already exists
-            const existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+            const existing = await db.query('SELECT user_id FROM users WHERE email = $1', [email]);
             if (existing.rows.length > 0) {
                 return res.status(409).json({ error: 'An account with this email already exists.' });
             }
 
-            // Hash password with bcrypt (NEVER store plain text)
             const password_hash = await bcrypt.hash(password, 12);
 
             const result = await db.query(
-                'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role, is_active, created_at',
+                'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING user_id, name, email, role, is_active, created_at',
                 [name, email, password_hash, role]
             );
 
             const user = result.rows[0];
-            // NOTE: we do NOT return the token on register — user must log in explicitly
-            return res.status(201).json({ message: 'Account created successfully.', user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+            return res.status(201).json({ message: 'Account created successfully.', user: { id: user.user_id, name: user.name, email: user.email, role: user.role } });
         } catch (err) {
             console.error('Register error:', err.message);
             return res.status(500).json({ error: 'Server error. Please try again.' });
@@ -76,7 +74,7 @@ router.post(
 
         try {
             const result = await db.query(
-                'SELECT id, name, email, password_hash, role, is_active FROM users WHERE email = $1',
+                'SELECT user_id, name, email, password_hash, role, is_active FROM users WHERE email = $1',
                 [email]
             );
 
@@ -90,14 +88,13 @@ router.post(
                 return res.status(403).json({ error: 'Your account has been deactivated. Contact an Admin.' });
             }
 
-            // Secure comparison — NEVER compare plain text passwords
             const passwordMatch = await bcrypt.compare(password, user.password_hash);
             if (!passwordMatch) {
                 return res.status(401).json({ error: 'Invalid email or password.' });
             }
 
             const token = signToken(user);
-            const safeUser = { id: user.id, name: user.name, email: user.email, role: user.role };
+            const safeUser = { id: user.user_id, name: user.name, email: user.email, role: user.role };
 
             return res.json({ token, user: safeUser });
         } catch (err) {
@@ -107,9 +104,6 @@ router.post(
     }
 );
 
-// ─── POST /api/auth/logout ────────────────────────────────────────────────────
-// JWT is stateless — client deletes the token. This endpoint is a no-op but
-// exists so the frontend has a consistent call pattern.
 router.post('/logout', (req, res) => {
     return res.json({ message: 'Logged out successfully.' });
 });

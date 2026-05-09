@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import { useAuth } from '../AuthContext.jsx';
+import Footer from './Footer.jsx';
 
-const adminNav = [
+const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '⊞' },
     { id: 'donors', label: 'Donors', icon: '👥' },
     { id: 'donations', label: 'Donations', icon: '💰' },
@@ -11,19 +12,10 @@ const adminNav = [
     { id: 'users', label: 'Users', icon: '👤' },
 ];
 
-const operatorNav = [
-    { id: 'operator-dashboard', label: 'Dashboard', icon: '⊞' },
-    { id: 'donors', label: 'Donors', icon: '👥' },
-    { id: 'donations', label: 'Donations', icon: '💰' },
-    { id: 'projects', label: 'Projects', icon: '📁' },
-    { id: 'expenses', label: 'Expenses', icon: '📊' },
-];
-
 export default function Layout({ children, currentPage, onNavigate }) {
     const { user, logout } = useAuth();
     const router = useRouter();
     const isAdmin = user?.role === 'Admin';
-    const navItems = isAdmin ? adminNav : operatorNav;
 
     const handleLogout = async () => {
         await logout();
@@ -127,8 +119,11 @@ export default function Layout({ children, currentPage, onNavigate }) {
                 </div>
             </aside>
 
-            <main style={{ flex: 1, padding: '32px 36px', minHeight: '100vh' }}>
-                {children}
+            <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', boxSizing: 'border-box' }}>
+                <div style={{ padding: '32px 36px', flex: 1 }}>
+                    {children}
+                </div>
+                <Footer />
             </main>
         </div>
     );
