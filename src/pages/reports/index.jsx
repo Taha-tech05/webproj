@@ -4,7 +4,7 @@ import { useAuth } from '../../AuthContext.jsx';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import {
-  PageHeader, StatCard, Btn, fmt
+  PageHeader, StatCard, Btn, fmt, toMoneyNumber
 } from '../../components/UI.jsx';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 
@@ -18,37 +18,37 @@ export default function Reports() {
   const [filterProject, setFilterProject] = useState('');
   const [filterMonth, setFilterMonth] = useState('');
 
-  const totalReceived = donations.filter(d => d.status === 'paid').reduce((s, d) => s + d.amount, 0);
-  const totalPending = donations.filter(d => d.status === 'pending').reduce((s, d) => s + d.amount, 0);
-  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+  const totalReceived = donations.filter(d => d.status === 'paid').reduce((s, d) => s + toMoneyNumber(d.amount), 0);
+  const totalPending = donations.filter(d => d.status === 'pending').reduce((s, d) => s + toMoneyNumber(d.amount), 0);
+  const totalExpenses = expenses.reduce((s, e) => s + toMoneyNumber(e.amount), 0);
   const balance = totalReceived - totalExpenses;
 
   // Monthly donations data
   const monthlyDonations = MONTHS.map(m => ({
     month: m.slice(0, 3),
-    donations: donations.filter(d => d.month === m && d.status === 'paid').reduce((s, d) => s + d.amount, 0),
-    pending: donations.filter(d => d.month === m && d.status === 'pending').reduce((s, d) => s + d.amount, 0),
+    donations: donations.filter(d => d.month === m && d.status === 'paid').reduce((s, d) => s + toMoneyNumber(d.amount), 0),
+    pending: donations.filter(d => d.month === m && d.status === 'pending').reduce((s, d) => s + toMoneyNumber(d.amount), 0),
     expenses: expenses.filter(e => {
       const date = new Date(e.date);
       return date.toLocaleString('default', { month: 'long' }) === m;
-    }).reduce((s, e) => s + e.amount, 0),
+    }).reduce((s, e) => s + toMoneyNumber(e.amount), 0),
   })).filter(m => m.donations > 0 || m.expenses > 0);
 
   // Project financial summary
   const projectSummary = projects.map(p => ({
     name: p.name,
-    income: p.income || 0,
-    expenses: p.expenses || 0,
-    balance: (p.income || 0) - (p.expenses || 0),
-    budget: p.budget || 0,
+    income: toMoneyNumber(p.income),
+    expenses: toMoneyNumber(p.expenses),
+    balance: toMoneyNumber(p.income) - toMoneyNumber(p.expenses),
+    budget: toMoneyNumber(p.budget),
   }));
 
   // Donor report
   const donorReport = donors.map(d => {
     const dDonations = donations.filter(dn => dn.donorId === d.id);
-    const paid = dDonations.filter(dn => dn.status === 'paid').reduce((s, dn) => s + dn.amount, 0);
-    const pending = dDonations.filter(dn => dn.status === 'pending').reduce((s, dn) => s + dn.amount, 0);
-    return { ...d, paid, pending, total: dDonations.reduce((s, dn) => s + dn.amount, 0), count: dDonations.length };
+    const paid = dDonations.filter(dn => dn.status === 'paid').reduce((s, dn) => s + toMoneyNumber(dn.amount), 0);
+    const pending = dDonations.filter(dn => dn.status === 'pending').reduce((s, dn) => s + toMoneyNumber(dn.amount), 0);
+    return { ...d, paid, pending, total: dDonations.reduce((s, dn) => s + toMoneyNumber(dn.amount), 0), count: dDonations.length };
   }).filter(d => !filterDonor || d.name === filterDonor);
 
   // Filtered donations
@@ -57,7 +57,9 @@ export default function Reports() {
   });
 
   // Pie data for projects
-  const pieData = projects.map((p, i) => ({ name: p.name, value: p.income || 0, color: COLORS[i % COLORS.length] }));
+  const pieData = projects
+    .map((p, i) => ({ name: p.name, value: toMoneyNumber(p.income), color: COLORS[i % COLORS.length] }))
+    .filter(p => p.value > 0);
 
   const tabs = [
     { id: 'summary', label: '📈 Summary' },
@@ -105,14 +107,18 @@ export default function Reports() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             <div style={{ background: '#fff', borderRadius: 'var(--radius)', padding: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
               <h3 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '20px' }}>Income by Project</h3>
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={11}>
-                    {pieData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
-                  </Pie>
-                  <Tooltip formatter={(v) => fmt(v)} />
-                </PieChart>
-              </ResponsiveContainer>
+              {pieData.length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '40px' }}>No project income available</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={11}>
+                      {pieData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
+                    </Pie>
+                    <Tooltip formatter={(v) => fmt(v)} />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
 
             <div style={{ background: '#fff', borderRadius: 'var(--radius)', padding: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
@@ -198,7 +204,7 @@ export default function Reports() {
               </thead>
               <tbody>
                 {projectSummary.map((p, i) => {
-                  const budgetPct = Math.round((p.income / p.budget) * 100);
+                  const budgetPct = p.budget > 0 ? Math.min(Math.round((p.income / p.budget) * 100), 100) : 0;
                   const expPct = p.income > 0 ? Math.round((p.expenses / p.income) * 100) : 0;
                   const health = expPct > 85 ? '🔴 Critical' : expPct > 65 ? '🟡 Caution' : '🟢 Healthy';
                   return (
@@ -211,7 +217,7 @@ export default function Reports() {
                       <td style={{ padding: '13px 14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div style={{ flex: 1, height: '6px', background: '#e8eeff', borderRadius: '99px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${Math.min(budgetPct, 100)}%`, background: COLORS[i % COLORS.length], borderRadius: '99px' }} />
+                            <div style={{ height: '100%', width: `${budgetPct}%`, background: COLORS[i % COLORS.length], borderRadius: '99px' }} />
                           </div>
                           <span style={{ fontSize: '12px', minWidth: '36px' }}>{budgetPct}%</span>
                         </div>
@@ -269,9 +275,9 @@ export default function Reports() {
             </table>
           </div>
           <div style={{ background: '#f0f4ff', borderRadius: '10px', padding: '16px 20px', marginTop: '16px', display: 'flex', gap: '32px' }}>
-            <div><span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Total: </span><strong style={{ fontFamily: 'var(--mono)' }}>{fmt(filteredDonations.reduce((s, d) => s + d.amount, 0))}</strong></div>
-            <div><span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Paid: </span><strong style={{ fontFamily: 'var(--mono)', color: 'var(--accent)' }}>{fmt(filteredDonations.filter(d => d.status === 'paid').reduce((s, d) => s + d.amount, 0))}</strong></div>
-            <div><span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Pending: </span><strong style={{ fontFamily: 'var(--mono)', color: 'var(--warning)' }}>{fmt(filteredDonations.filter(d => d.status === 'pending').reduce((s, d) => s + d.amount, 0))}</strong></div>
+            <div><span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Total: </span><strong style={{ fontFamily: 'var(--mono)' }}>{fmt(filteredDonations.reduce((s, d) => s + toMoneyNumber(d.amount), 0))}</strong></div>
+            <div><span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Paid: </span><strong style={{ fontFamily: 'var(--mono)', color: 'var(--accent)' }}>{fmt(filteredDonations.filter(d => d.status === 'paid').reduce((s, d) => s + toMoneyNumber(d.amount), 0))}</strong></div>
+            <div><span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Pending: </span><strong style={{ fontFamily: 'var(--mono)', color: 'var(--warning)' }}>{fmt(filteredDonations.filter(d => d.status === 'pending').reduce((s, d) => s + toMoneyNumber(d.amount), 0))}</strong></div>
           </div>
         </div>
       )}

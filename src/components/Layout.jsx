@@ -3,19 +3,36 @@ import { useAuth } from '../AuthContext.jsx';
 import Footer from './Footer.jsx';
 
 const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '⊞' },
-    { id: 'donors', label: 'Donors', icon: '👥' },
-    { id: 'donations', label: 'Donations', icon: '💰' },
-    { id: 'projects', label: 'Projects', icon: '📁' },
-    { id: 'expenses', label: 'Expenses', icon: '📊' },
-    { id: 'reports', label: 'Reports', icon: '📋' },
-    { id: 'users', label: 'Users', icon: '👤' },
+    { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', roles: ['Admin'] },
+    { id: 'donors', label: 'Donors', icon: 'donors', roles: ['Admin', 'Operator'] },
+    { id: 'donations', label: 'Donations', icon: 'donations', roles: ['Admin', 'Operator'] },
+    { id: 'projects', label: 'Projects', icon: 'projects', roles: ['Admin'] },
+    { id: 'expenses', label: 'Expenses', icon: 'expenses', roles: ['Admin', 'Operator'] },
+    { id: 'reports', label: 'Reports', icon: 'reports', roles: ['Admin'] },
+    { id: 'users', label: 'Users', icon: 'users', roles: ['Admin'] },
 ];
+
+function NavIcon({ name, active }) {
+    const color = active ? 'var(--sidebar-active-text)' : 'currentColor';
+    const common = { fill: 'none', stroke: color, strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
+    const icons = {
+        dashboard: <><rect x="3" y="3" width="7" height="7" rx="1.5" {...common} /><rect x="14" y="3" width="7" height="7" rx="1.5" {...common} /><rect x="3" y="14" width="7" height="7" rx="1.5" {...common} /><path d="M14 17h7M17.5 13.5v7" {...common} /></>,
+        donors: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" {...common} /><circle cx="9" cy="7" r="4" {...common} /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" {...common} /></>,
+        donations: <><rect x="3" y="6" width="18" height="12" rx="2" {...common} /><circle cx="12" cy="12" r="2.5" {...common} /><path d="M6 10v4M18 10v4" {...common} /></>,
+        projects: <><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v7A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z" {...common} /></>,
+        expenses: <><path d="M4 19V5M4 19h16" {...common} /><rect x="7" y="11" width="3" height="5" rx="1" {...common} /><rect x="12" y="7" width="3" height="9" rx="1" {...common} /><rect x="17" y="9" width="3" height="7" rx="1" {...common} /></>,
+        reports: <><path d="M6 3h9l3 3v15H6z" {...common} /><path d="M14 3v4h4M9 14h6M9 18h6M9 10h2" {...common} /></>,
+        users: <><circle cx="12" cy="7" r="4" {...common} /><path d="M5.5 21a6.5 6.5 0 0 1 13 0" {...common} /><path d="M19 8h3M20.5 6.5v3" {...common} /></>,
+    };
+
+    return <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">{icons[name]}</svg>;
+}
 
 export default function Layout({ children, currentPage, onNavigate }) {
     const { user, logout } = useAuth();
     const router = useRouter();
     const isAdmin = user?.role === 'Admin';
+    const visibleNavItems = navItems.filter(item => item.roles.includes(user?.role));
 
     const handleLogout = async () => {
         await logout();
@@ -32,7 +49,6 @@ export default function Layout({ children, currentPage, onNavigate }) {
                 padding: '32px 20px', boxSizing: 'border-box', gap: '24px',
             }}>
                 <div>
-                    {/* Brand */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '36px', paddingLeft: '4px' }}>
                         <div style={{
                             width: '40px', height: '40px', borderRadius: '12px',
@@ -42,14 +58,13 @@ export default function Layout({ children, currentPage, onNavigate }) {
                             boxShadow: '0 6px 20px rgba(79, 70, 229, 0.35)',
                         }}>F</div>
                         <div>
-                            <div style={{ fontSize: '16px', fontWeight: '800', color: '#f8fafc', letterSpacing: '-0.2px' }}>Financial Tracking</div>
-                            <div style={{ fontSize: '11px', color: 'var(--sidebar-text)', marginTop: '3px', fontWeight: 500 }}>{isAdmin ? 'Admin workspace' : 'Operator workspace'}</div>
+                            <div style={{ fontSize: '16px', fontWeight: '800', color: '#f8fafc' }}>Financial Tracking</div>
+                            <div style={{ fontSize: '11px', color: 'var(--sidebar-text)', marginTop: '3px', fontWeight: 500 }}>{isAdmin ? 'Admin workspace' : 'Data entry workspace'}</div>
                         </div>
                     </div>
 
-                    {/* Nav */}
                     <nav style={{ display: 'grid', gap: '4px' }}>
-                        {navItems.map(item => {
+                        {visibleNavItems.map(item => {
                             const active = currentPage === item.id;
                             return (
                                 <button
@@ -79,7 +94,9 @@ export default function Layout({ children, currentPage, onNavigate }) {
                                             borderRadius: '0 3px 3px 0',
                                         }} />
                                     )}
-                                    <span style={{ fontSize: '17px', opacity: active ? 1 : 0.8 }}>{item.icon}</span>
+                                    <span style={{ width: '18px', height: '18px', display: 'inline-flex', opacity: active ? 1 : 0.82 }}>
+                                        <NavIcon name={item.icon} active={active} />
+                                    </span>
                                     <span>{item.label}</span>
                                 </button>
                             );
@@ -87,7 +104,6 @@ export default function Layout({ children, currentPage, onNavigate }) {
                     </nav>
                 </div>
 
-                {/* User + Logout */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: '4px' }}>
                         <div style={{

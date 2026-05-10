@@ -3,12 +3,7 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/login": "pages/login.js",
-  "/donors": "pages/donors.js",
-  "/dashboard": "pages/dashboard.js",
   "/donations": "pages/donations.js",
-  "/projects": "pages/projects.js",
-  "/expenses": "pages/expenses.js",
-  "/reports": "pages/reports.js",
-  "/users": "pages/users.js"
+  "/donors": "pages/donors.js",
+  "/expenses": "pages/expenses.js"
 }

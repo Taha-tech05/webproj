@@ -66,8 +66,8 @@ export default function Donors() {
   });
 
   const activeDonors = donors.filter(d => d.status === 'active').length;
-  const totalPledged = donors.reduce((s, d) => s + (d.pledged || 0), 0);
-  const totalReceived = donors.reduce((s, d) => s + (d.received || 0), 0);
+  const totalPledged = donors.reduce((s, d) => s + (Number(d.pledged) || 0), 0);
+  const totalReceived = donors.reduce((s, d) => s + (Number(d.received) || 0), 0);
 
   // Get donation history for a donor
   const getDonorDonations = (donorId) => donations.filter(d => d.donorId === donorId);

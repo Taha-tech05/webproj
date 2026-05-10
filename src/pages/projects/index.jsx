@@ -3,7 +3,7 @@ import { useStore } from '../../store.js';
 import { useAuth } from '../../AuthContext.jsx';
 import {
   Modal, Field, Input, Select, Textarea, Btn, Badge, Table, TR, TD,
-  PageHeader, SearchBar, StatCard, Toast, ConfirmDialog, fmt
+  PageHeader, SearchBar, StatCard, Toast, ConfirmDialog, fmt, toMoneyNumber
 } from '../../components/UI.jsx';
 
 const emptyForm = { name: '', description: '', budget: '', status: 'active' };
@@ -51,9 +51,9 @@ export default function Projects() {
     return matchSearch && matchStatus;
   });
 
-  const totalBudget = projects.reduce((s, p) => s + (p.budget || 0), 0);
-  const totalIncome = projects.reduce((s, p) => s + (p.income || 0), 0);
-  const totalExpenses = projects.reduce((s, p) => s + (p.expenses || 0), 0);
+  const totalBudget = projects.reduce((s, p) => s + toMoneyNumber(p.budget), 0);
+  const totalIncome = projects.reduce((s, p) => s + toMoneyNumber(p.income), 0);
+  const totalExpenses = projects.reduce((s, p) => s + toMoneyNumber(p.expenses), 0);
 
   const getProjectDonations = (pId) => donations.filter(d => d.projectId === pId);
   const getProjectExpenses = (pId) => expenses.filter(e => e.projectId === pId);
@@ -91,9 +91,12 @@ export default function Projects() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
           {filtered.map(p => {
-            const balance = (p.income || 0) - (p.expenses || 0);
-            const budgetPct = Math.min(Math.round(((p.income || 0) / p.budget) * 100), 100);
-            const expPct = p.income > 0 ? Math.round(((p.expenses || 0) / p.income) * 100) : 0;
+            const income = toMoneyNumber(p.income);
+            const expensesTotal = toMoneyNumber(p.expenses);
+            const budget = toMoneyNumber(p.budget);
+            const balance = income - expensesTotal;
+            const budgetPct = budget > 0 ? Math.min(Math.round((income / budget) * 100), 100) : 0;
+            const expPct = income > 0 ? Math.round((expensesTotal / income) * 100) : 0;
             const isLow = balance < 50000 || expPct > 85;
             const colorMap = { Education: '#1a3faa', Health: '#00875a', Infrastructure: '#b07d00', Community: '#7b2d8b', Environment: '#0d6e6e' };
             const pColor = colorMap[p.name] || 'var(--primary)';

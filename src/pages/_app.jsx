@@ -25,8 +25,9 @@ const routeMap = {
   users: '/users',
 };
 
-// Pages that require strictly Admin role
-const adminOnlyPages = ['/reports'];
+const operatorPages = ['/donors', '/donations', '/expenses'];
+const adminLandingPage = '/dashboard';
+const operatorLandingPage = '/donors';
 
 function AppContent({ Component, pageProps }) {
   const { user, loading } = useAuth();
@@ -44,14 +45,14 @@ function AppContent({ Component, pageProps }) {
     }
 
     if (user && isPublic) {
-      router.replace('/dashboard');
+      router.replace(user.role === 'Admin' ? adminLandingPage : operatorLandingPage);
       return;
     }
 
     if (user) {
       const path = router.pathname;
-      if (user.role !== 'Admin' && adminOnlyPages.includes(path)) {
-        router.replace('/dashboard');
+      if (user.role !== 'Admin' && !operatorPages.includes(path)) {
+        router.replace(operatorLandingPage);
         return;
       }
     }
@@ -75,6 +76,7 @@ function AppContent({ Component, pageProps }) {
   }
 
   if (!user) return null; // Will redirect via useEffect above
+  if (user.role !== 'Admin' && !operatorPages.includes(router.pathname)) return null;
 
   const currentPage = pageMap[router.pathname] || 'dashboard';
   const onNavigate = (id) => router.push(routeMap[id] || '/dashboard');

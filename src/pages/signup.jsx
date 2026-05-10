@@ -56,21 +56,24 @@ export default function SignupPage() {
     ];
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#060b1f', position: 'relative', overflow: 'hidden', fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif' }}>
+        <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#07111f',
+            backgroundImage: 'linear-gradient(120deg, rgba(7,17,31,0.88), rgba(15,23,42,0.62)), url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1800&q=85")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+            fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif'
+        }}>
             <style>{`
         @keyframes orbFloat { 0%{transform:translateY(0)} 100%{transform:translateY(-35px)} }
         @keyframes slideUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
         @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
       `}</style>
-
-            {/* Background orbs */}
-            {[
-                ['400px', '-8%', '-8%', '#2952d9', 0],
-                ['360px', '60%', '-5%', '#7b4cf0', 2],
-                ['320px', '10%', '65%', '#00c48c', 1],
-            ].map(([sz, x, y, c, d], i) => (
-                <div key={i} style={{ position: 'absolute', width: sz, height: sz, borderRadius: '50%', background: `radial-gradient(circle, ${c} 0%, transparent 70%)`, filter: 'blur(60px)', opacity: 0.35, left: x, top: y, animation: `orbFloat ${7 + Number(d)}s ease-in-out infinite alternate`, animationDelay: `${d}s` }} />
-            ))}
 
             <div style={{ position: 'relative', zIndex: 2, opacity: loaded ? 1 : 0, animation: loaded ? 'slideUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards' : 'none', width: '460px', maxWidth: '94vw' }}>
                 <div style={{ position: 'absolute', inset: '-2px', borderRadius: '26px', background: 'conic-gradient(from 0deg, #2952d9, #7b4cf0, #00c48c, #2952d9)', animation: 'spin 4s linear infinite', opacity: 0.3, filter: 'blur(8px)' }} />

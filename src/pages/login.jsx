@@ -51,7 +51,7 @@ export default function LoginPage() {
     try {
       const result = await login(email, password);
       if (result.success) {
-        router.replace(result.user.role === 'Admin' ? '/dashboard' : '/operator-dashboard');
+        router.replace(result.user.role === 'Admin' ? '/dashboard' : '/donors');
       } else {
         setError(result.error || 'Login failed. Please try again.');
       }
@@ -66,7 +66,20 @@ export default function LoginPage() {
     <div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#060b1f', position: 'relative', overflow: 'hidden', fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif', perspective: '1200px' }}
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#07111f',
+        backgroundImage: 'linear-gradient(120deg, rgba(7,17,31,0.88), rgba(15,23,42,0.62)), url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1800&q=85")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+        perspective: '1200px'
+      }}
     >
       <style>{`
         @keyframes orbFloat { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-35px) scale(1.08); } }
@@ -79,15 +92,6 @@ export default function LoginPage() {
       `}</style>
 
       <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(600px circle at ${spotlight.x}% ${spotlight.y}%, rgba(41,82,217,0.12), transparent 60%)`, pointerEvents: 'none', zIndex: 1, transition: 'background 0.4s ease-out' }} />
-
-      <div style={orb('520px', '-12%', '-12%', 'radial-gradient(circle, #2952d9 0%, transparent 70%)', 0)} />
-      <div style={orb('420px', '55%', '-8%', 'radial-gradient(circle, #7b4cf0 0%, transparent 70%)', 2.5)} />
-      <div style={orb('380px', '15%', '60%', 'radial-gradient(circle, #00c48c 0%, transparent 70%)', 1.2)} />
-      <div style={orb('340px', '78%', '52%', 'radial-gradient(circle, #2952d9 0%, transparent 70%)', 3.5)} />
-
-      {Array.from({ length: 24 }).map((_, i) => (
-        <div key={i} style={{ position: 'absolute', width: `${2 + (i % 3)}px`, height: `${2 + (i % 3)}px`, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', left: `${(i * 17) % 100}%`, top: `${(i * 13) % 100}%`, animation: `dustFloat ${4 + (i % 5)}s ease-in-out infinite alternate`, animationDelay: `${i * 0.25}s`, pointerEvents: 'none' }} />
-      ))}
 
       <div
         ref={cardRef}

@@ -58,11 +58,8 @@ router.post(
     }
 );
 
-// Admins only past here
-router.use(requireRole('Admin'));
-
 // ─── DELETE /api/expenses/:id ──────────────────────────────────────────────
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireRole('Admin'), async (req, res) => {
     const { id } = req.params;
     try {
         await db.query('DELETE FROM expenses WHERE expense_id = $1', [id]);

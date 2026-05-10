@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
-export const fmt = (n) => `Rs${Number(n || 0).toLocaleString('en-PK')}`;
+export const toMoneyNumber = (n) => {
+  const value = Number(n);
+  return Number.isFinite(value) ? value : 0;
+};
+
+export const fmt = (n) => `Rs${toMoneyNumber(n).toLocaleString('en-PK')}`;
 export const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-PK') : '';
 
 export function Modal({ open, onClose, title, children, width }) {

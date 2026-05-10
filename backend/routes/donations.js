@@ -61,6 +61,37 @@ router.post(
     }
 );
 
+router.put(
+    '/:id',
+    [
+        body('donorId').notEmpty(),
+        body('projectId').notEmpty(),
+        body('amount').isNumeric(),
+    ],
+    async (req, res) => {
+        const errs = validationResult(req);
+        if (!errs.isEmpty()) return res.status(400).json({ error: errs.array()[0].msg });
+
+        const { id } = req.params;
+        const { donorId, projectId, amount, paymentMode, date, notes } = req.body;
+        try {
+            const result = await db.query(
+                `UPDATE donations
+                 SET donor_id = $1, project_id = $2, amount = $3, payment_mode = $4,
+                     donation_date = COALESCE($5::date, donation_date), notes = $6
+                 WHERE donation_id = $7
+                 RETURNING donation_id as id`,
+                [donorId, projectId, amount, paymentMode, date || null, notes, id]
+            );
+            if (result.rows.length === 0) return res.status(404).json({ error: 'Donation not found.' });
+            res.json({ id: result.rows[0].id });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to update donation.' });
+        }
+    }
+);
+
 // Admins only past here
 router.use(requireRole('Admin'));
 

@@ -86,9 +86,9 @@ export default function Donations() {
     return matchSearch && matchProject && matchStatus;
   });
 
-  const totalAll = donations.reduce((s, d) => s + d.amount, 0);
-  const totalPaid = donations.filter(d => d.status === 'paid').reduce((s, d) => s + d.amount, 0);
-  const totalPending = donations.filter(d => d.status === 'pending').reduce((s, d) => s + d.amount, 0);
+  const totalAll = donations.reduce((s, d) => s + (Number(d.amount) || 0), 0);
+  const totalPaid = donations.filter(d => d.status === 'paid').reduce((s, d) => s + (Number(d.amount) || 0), 0);
+  const totalPending = donations.filter(d => d.status === 'pending').reduce((s, d) => s + (Number(d.amount) || 0), 0);
 
   return (
     <div>

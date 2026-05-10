@@ -8,7 +8,7 @@ const router = express.Router();
 router.use(authenticate);
 
 // ─── GET /api/users ────────────────────────────────────────────────────────────
-router.get('/', async (req, res) => {
+router.get('/', requireRole('Admin'), async (req, res) => {
     try {
         const result = await db.query(
             'SELECT user_id as id, name, email, role, is_active, created_at FROM users ORDER BY created_at ASC'
