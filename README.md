@@ -439,7 +439,3 @@ If you encounter any issues:
   - Project, donor, donation, and expense management
   - Dashboard with analytics and charts
   - PDF report generation
-
----
-
-**Built with ❤️ for non-profit organizations to streamline financial management.**
