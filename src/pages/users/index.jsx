@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../AuthContext.jsx';
+import API_BASE_URL from '../../lib/api.js';
 
 const getRoleColor = (role) => {
     const colors = { Admin: { bg: '#ede9fe', text: '#5b21b6' }, Operator: { bg: '#e0f2fe', text: '#0369a1' }, Viewer: { bg: '#f1f5f9', text: '#475569' } };
@@ -23,7 +24,7 @@ export default function Users() {
     const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const isAdmin = user?.role === 'Admin';
-    const API = 'http://localhost:4000/api/users';
+    const API = `${API_BASE_URL}/api/users`;
 
     const headers = {
         'Authorization': `Bearer ${getToken()}`,

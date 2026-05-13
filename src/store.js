@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useEffect, createElement } from 'react';
 import { useAuth } from './AuthContext.jsx';
+import API_BASE_URL from './lib/api.js';
 
 const StoreContext = createContext(null);
-const API = 'http://localhost:4000/api';
+const API = `${API_BASE_URL}/api`;
 
 const toNumber = (value) => {
   const number = Number(value);
