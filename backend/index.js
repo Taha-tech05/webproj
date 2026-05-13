@@ -38,7 +38,8 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    console.log(`\n🚀  Financial Tracking API running on http://localhost:${PORT}`);
-    console.log(`   Health: http://localhost:${PORT}/api/health\n`);
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n🚀 Financial Tracking API running on port ${PORT}`);
+    console.log(`   Health Check: /api/health\n`);
 });
