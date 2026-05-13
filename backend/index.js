@@ -11,7 +11,15 @@ const expenseRoutes = require('./routes/expenses');
 
 const app = express();
 
-app.use(cors({ origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], credentials: true }));
+// Change this line:
+app.use(cors({ 
+    origin: [
+        'http://localhost:3000', 
+        'http://127.0.0.1:3000', 
+        'https://financial-tracker-donation-manage.vercel.app' // ADD YOUR DEPLOYED URL HERE
+    ], 
+    credentials: true 
+}));
 app.use(express.json());
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
