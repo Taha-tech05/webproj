@@ -9,6 +9,11 @@ self.__BUILD_MANIFEST = {
   "lowPriorityFiles": [],
   "rootMainFiles": [],
   "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -19,45 +24,20 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/dashboard": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/dashboard.js"
-    ],
-    "/donations": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/donations.js"
-    ],
     "/donors": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/donors.js"
-    ],
-    "/expenses": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/expenses.js"
     ],
     "/login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/login.js"
     ],
-    "/projects": [
+    "/signup": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/projects.js"
-    ],
-    "/reports": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/reports.js"
-    ],
-    "/users": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/users.js"
+      "static/chunks/pages/signup.js"
     ]
   },
   "ampFirstPages": []

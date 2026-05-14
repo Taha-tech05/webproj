@@ -2,12 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/": "pages/index.js",
   "/donors": "pages/donors.js",
   "/login": "pages/login.js",
-  "/dashboard": "pages/dashboard.js",
-  "/projects": "pages/projects.js",
-  "/donations": "pages/donations.js",
-  "/expenses": "pages/expenses.js",
-  "/reports": "pages/reports.js",
-  "/users": "pages/users.js"
+  "/signup": "pages/signup.js"
 }

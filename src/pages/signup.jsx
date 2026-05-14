@@ -49,10 +49,10 @@ export default function SignupPage() {
     };
 
     const fields = [
-        { id: 'name', label: 'Full Name', type: 'text', value: form.name },
-        { id: 'email', label: 'Email Address', type: 'email', value: form.email },
-        { id: 'password', label: 'Password', type: 'password', value: form.password },
-        { id: 'confirmPassword', label: 'Confirm Password', type: 'password', value: form.confirmPassword },
+        { id: 'name', label: 'Full Name', type: 'text', value: form.name, placeholder: 'John Doe' },
+        { id: 'email', label: 'Email Address', type: 'email', value: form.email, placeholder: 'you@company.com' },
+        { id: 'password', label: 'Password', type: 'password', value: form.password, placeholder: '••••••••' },
+        { id: 'confirmPassword', label: 'Confirm Password', type: 'password', value: form.confirmPassword, placeholder: '••••••••' },
     ];
 
     return (
@@ -61,49 +61,149 @@ export default function SignupPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#07111f',
-            backgroundImage: 'linear-gradient(120deg, rgba(7,17,31,0.88), rgba(15,23,42,0.62)), url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1800&q=85")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
             position: 'relative',
             overflow: 'hidden',
-            fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif'
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            padding: '40px 20px'
         }}>
             <style>{`
-        @keyframes orbFloat { 0%{transform:translateY(0)} 100%{transform:translateY(-35px)} }
-        @keyframes slideUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
-        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       `}</style>
 
-            <div style={{ position: 'relative', zIndex: 2, opacity: loaded ? 1 : 0, animation: loaded ? 'slideUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards' : 'none', width: '460px', maxWidth: '94vw' }}>
-                <div style={{ position: 'absolute', inset: '-2px', borderRadius: '26px', background: 'conic-gradient(from 0deg, #2952d9, #7b4cf0, #00c48c, #2952d9)', animation: 'spin 4s linear infinite', opacity: 0.3, filter: 'blur(8px)' }} />
+            {/* Animated background elements */}
+            <div style={{ position: 'absolute', top: '10%', left: '5%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%)', borderRadius: '50%', filter: 'blur(60px)', animation: 'float 8s ease-in-out infinite' }} />
+            <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '350px', height: '350px', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15), transparent 70%)', borderRadius: '50%', filter: 'blur(60px)', animation: 'float 10s ease-in-out infinite', animationDelay: '1s' }} />
+            <div style={{ position: 'absolute', top: '50%', left: '50%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent 70%)', borderRadius: '50%', filter: 'blur(60px)', transform: 'translate(-50%, -50%)', animation: 'float 12s ease-in-out infinite', animationDelay: '2s' }} />
 
-                <div style={{ position: 'relative', padding: '44px 42px', background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(28px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '24px', boxShadow: '0 30px 90px rgba(0,0,0,0.5)' }}>
-                    <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }} />
+            {/* Noise texture overlay */}
+            <div style={{ position: 'absolute', inset: 0, opacity: 0.03, mixBlendMode: 'overlay', backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")' }} />
+
+            <div style={{
+                position: 'relative',
+                zIndex: 2,
+                opacity: loaded ? 1 : 0,
+                animation: loaded ? 'fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',
+                width: '100%',
+                maxWidth: '440px'
+            }}>
+                {/* Card */}
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(40px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '24px',
+                    padding: '44px 36px',
+                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}>
+                    {/* Top gradient accent */}
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), rgba(168, 85, 247, 0.8), transparent)' }} />
 
                     {/* Header */}
-                    <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                        <div style={{ width: '60px', height: '60px', background: 'linear-gradient(135deg, #2952d9, #7b4cf0)', borderRadius: '16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '800', color: '#fff', marginBottom: '18px', boxShadow: '0 10px 35px rgba(41,82,217,0.4)' }}>F</div>
-                        <h1 style={{ fontSize: '24px', fontWeight: '800', background: 'linear-gradient(90deg, #fff, #a5b4ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', marginBottom: '6px' }}>Create Account</h1>
-                        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)' }}>Financial Tracking System</p>
+                    <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+                        <div style={{
+                            width: '56px',
+                            height: '56px',
+                            background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                            borderRadius: '16px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '24px',
+                            fontWeight: '700',
+                            color: '#fff',
+                            marginBottom: '20px',
+                            boxShadow: '0 8px 24px rgba(99, 102, 241, 0.4)',
+                            position: 'relative',
+                            overflow: 'hidden'
+                        }}>
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%)', backgroundSize: '200% 200%', animation: 'shimmer 3s infinite' }} />
+                            F
+                        </div>
+                        <h1 style={{
+                            fontSize: '26px',
+                            fontWeight: '700',
+                            marginBottom: '8px',
+                            background: 'linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            letterSpacing: '-0.02em'
+                        }}>
+                            Create your account
+                        </h1>
+                        <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.5)', fontWeight: '500' }}>
+                            Join Financial Tracking System
+                        </p>
                     </div>
 
                     {/* Error / Success */}
                     {error && (
-                        <div style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: '10px', padding: '12px 16px', marginBottom: '18px', fontSize: '13px', color: '#fca5a5', display: 'flex', gap: '8px' }}>
-                            <span>⚠</span> {error}
+                        <div style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            borderRadius: '12px',
+                            padding: '14px 16px',
+                            marginBottom: '20px',
+                            fontSize: '13px',
+                            color: '#fca5a5',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            fontWeight: '500'
+                        }}>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+                                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
+                                <path d="M8 4.5V8.5M8 11H8.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                            {error}
                         </div>
                     )}
                     {success && (
-                        <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)', borderRadius: '10px', padding: '12px 16px', marginBottom: '18px', fontSize: '13px', color: '#86efac', display: 'flex', gap: '8px' }}>
-                            <span>✓</span> {success}
+                        <div style={{
+                            background: 'rgba(34, 197, 94, 0.1)',
+                            border: '1px solid rgba(34, 197, 94, 0.3)',
+                            borderRadius: '12px',
+                            padding: '14px 16px',
+                            marginBottom: '20px',
+                            fontSize: '13px',
+                            color: '#86efac',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            fontWeight: '500'
+                        }}>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+                                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
+                                <path d="M5 8.5L7 10.5L11 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            {success}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit}>
                         {/* Text fields */}
                         {fields.map(f => (
-                            <div key={f.id} style={{ position: 'relative', marginBottom: '18px' }}>
+                            <div key={f.id} style={{ marginBottom: '18px' }}>
+                                <label
+                                    htmlFor={`signup-${f.id}`}
+                                    style={{
+                                        display: 'block',
+                                        fontSize: '13px',
+                                        fontWeight: '600',
+                                        color: 'rgba(255, 255, 255, 0.7)',
+                                        marginBottom: '8px',
+                                        letterSpacing: '0.01em'
+                                    }}
+                                >
+                                    {f.label}
+                                </label>
                                 <input
                                     id={`signup-${f.id}`}
                                     type={f.type}
@@ -112,26 +212,78 @@ export default function SignupPage() {
                                     onFocus={() => setFocusField(f.id)}
                                     onBlur={() => setFocusField('')}
                                     required
-                                    style={{ width: '100%', padding: '26px 16px 10px 16px', background: 'rgba(255,255,255,0.04)', border: `1.5px solid ${focusField === f.id ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.1)'}`, borderRadius: '12px', color: '#fff', fontSize: '14px', boxSizing: 'border-box', outline: 'none', transition: 'border-color 0.25s, box-shadow 0.25s', boxShadow: focusField === f.id ? '0 0 0 3px rgba(41,82,217,0.15)' : 'none', fontFamily: 'inherit' }}
+                                    placeholder={f.placeholder}
+                                    style={{
+                                        width: '100%',
+                                        padding: '13px 16px',
+                                        background: 'rgba(255, 255, 255, 0.05)',
+                                        border: `1px solid ${focusField === f.id ? 'rgba(99, 102, 241, 0.5)' : 'rgba(255, 255, 255, 0.1)'}`,
+                                        borderRadius: '12px',
+                                        color: '#fff',
+                                        fontSize: '15px',
+                                        boxSizing: 'border-box',
+                                        outline: 'none',
+                                        transition: 'all 0.2s ease',
+                                        boxShadow: focusField === f.id ? '0 0 0 4px rgba(99, 102, 241, 0.1)' : 'none',
+                                        fontFamily: 'inherit'
+                                    }}
                                 />
-                                <label htmlFor={`signup-${f.id}`} style={{ position: 'absolute', left: 16, top: f.value || focusField === f.id ? 6 : 18, fontSize: f.value || focusField === f.id ? 11 : 14, color: focusField === f.id ? '#8aa4ff' : 'rgba(255,255,255,0.4)', fontWeight: 600, transition: 'all 0.2s ease', pointerEvents: 'none' }}>
-                                    {f.label}
-                                </label>
                             </div>
                         ))}
 
                         {/* Role selector */}
                         <div style={{ marginBottom: '28px' }}>
-                            <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Role</label>
-                            <div style={{ display: 'flex', gap: '12px' }}>
-                                {['Operator', 'Admin'].map(role => (
+                            <label style={{
+                                display: 'block',
+                                fontSize: '13px',
+                                fontWeight: '600',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                marginBottom: '10px',
+                                letterSpacing: '0.01em'
+                            }}>
+                                Select Role
+                            </label>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                {[
+                                    { role: 'Operator', icon: '📊', desc: 'Standard user' },
+                                    { role: 'Admin', icon: '🔑', desc: 'Full access' }
+                                ].map(({ role, icon, desc }) => (
                                     <button
                                         key={role}
                                         type="button"
                                         onClick={() => setForm(p => ({ ...p, role }))}
-                                        style={{ flex: 1, padding: '12px', borderRadius: '10px', border: `1.5px solid ${form.role === role ? 'rgba(122, 101, 240, 0.8)' : 'rgba(255,255,255,0.1)'}`, background: form.role === role ? 'rgba(122,101,240,0.15)' : 'rgba(255,255,255,0.03)', color: form.role === role ? '#a5b4ff' : 'rgba(255,255,255,0.4)', fontWeight: '600', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' }}
+                                        style={{
+                                            padding: '14px 16px',
+                                            borderRadius: '12px',
+                                            border: `1px solid ${form.role === role ? 'rgba(99, 102, 241, 0.5)' : 'rgba(255, 255, 255, 0.1)'}`,
+                                            background: form.role === role ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                                            color: form.role === role ? '#e0e7ff' : 'rgba(255, 255, 255, 0.5)',
+                                            fontWeight: '600',
+                                            fontSize: '14px',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            textAlign: 'left',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: '4px',
+                                            boxShadow: form.role === role ? '0 0 0 4px rgba(99, 102, 241, 0.1)' : 'none'
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (form.role !== role) {
+                                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (form.role !== role) {
+                                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                                                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                                            }
+                                        }}
                                     >
-                                        {role === 'Operator' ? '📊 Operator' : '🔑 Admin'}
+                                        <span style={{ fontSize: '20px' }}>{icon}</span>
+                                        <span style={{ fontSize: '13px' }}>{role}</span>
+                                        <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.4)', fontWeight: '500' }}>{desc}</span>
                                     </button>
                                 ))}
                             </div>
@@ -140,16 +292,62 @@ export default function SignupPage() {
                         <button
                             type="submit"
                             disabled={submitting}
-                            style={{ width: '100%', padding: '14px', background: submitting ? 'rgba(41,82,217,0.5)' : 'linear-gradient(135deg, #2952d9, #7b4cf0)', color: '#fff', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: submitting ? 'wait' : 'pointer', transition: 'all 0.25s', boxShadow: '0 6px 20px rgba(41,82,217,0.35)' }}
+                            style={{
+                                width: '100%',
+                                padding: '14px',
+                                background: submitting ? 'rgba(99, 102, 241, 0.5)' : 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '12px',
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                cursor: submitting ? 'wait' : 'pointer',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                boxShadow: submitting ? 'none' : '0 4px 16px rgba(99, 102, 241, 0.4)',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                letterSpacing: '0.01em'
+                            }}
+                            onMouseEnter={e => {
+                                if (!submitting) {
+                                    e.target.style.transform = 'translateY(-2px)';
+                                    e.target.style.boxShadow = '0 8px 24px rgba(99, 102, 241, 0.5)';
+                                }
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = submitting ? 'none' : '0 4px 16px rgba(99, 102, 241, 0.4)';
+                            }}
                         >
-                            {submitting ? 'Creating account…' : 'Create Account'}
+                            {submitting ? (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ animation: 'spin 1s linear infinite' }}>
+                                        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="9 3" />
+                                    </svg>
+                                    Creating account...
+                                </span>
+                            ) : (
+                                'Create Account'
+                            )}
                         </button>
                     </form>
 
-                    <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.35)' }}>
+                    <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                        <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.4)' }}>
                             Already have an account?{' '}
-                            <a href="/login" style={{ color: '#8aa4ff', fontWeight: '600', textDecoration: 'none' }}>Sign in</a>
+                            <a
+                                href="/login"
+                                style={{
+                                    color: 'rgba(99, 102, 241, 0.9)',
+                                    fontWeight: '600',
+                                    textDecoration: 'none',
+                                    transition: 'color 0.2s'
+                                }}
+                                onMouseEnter={e => e.target.style.color = 'rgba(99, 102, 241, 1)'}
+                                onMouseLeave={e => e.target.style.color = 'rgba(99, 102, 241, 0.9)'}
+                            >
+                                Sign in
+                            </a>
                         </p>
                     </div>
                 </div>
