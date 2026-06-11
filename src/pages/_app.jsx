@@ -32,9 +32,10 @@ const operatorLandingPage = '/donors';
 function AppContent({ Component, pageProps }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const isHome = router.pathname === '/' || router.pathname === '/home';
   const isLogin = router.pathname === '/login';
   const isSignup = router.pathname === '/signup';
-  const isPublic = isLogin || isSignup;
+  const isPublic = isHome || isLogin || isSignup;
 
   useEffect(() => {
     if (loading) return; // Wait until auth state is known — prevents flash/redirect loop
